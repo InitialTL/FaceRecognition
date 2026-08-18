@@ -40,7 +40,7 @@ def main() -> int:
     SAVE_DIR.mkdir(parents=True, exist_ok=True)
     print(f"[DEVICE STATUS] {DEVICE}")
     proceed = input("Proceed [y/n] > ")[0] == "y"
-    if proceed:
+    if not proceed:
         return 1 
 
     print("[BOOTING STATUS] Initializing SummaryWriter...")
