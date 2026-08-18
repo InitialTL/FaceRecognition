@@ -42,8 +42,8 @@ def compute_iou(box1, box2):
     
     inter_x_min = max(x_min1, x_min2)
     inter_y_min = max(y_min1, y_min2)
-    inter_x_max = max(x_max1, x_max2)
-    inter_y_max = max(y_max1, y_max2)
+    inter_x_max = min(x_max1, x_max2)
+    inter_y_max = min(y_max1, y_max2)
 
     inter_width = max(0, inter_x_max - inter_x_min)
     inter_height = max(0, inter_y_max - inter_y_min)
@@ -56,7 +56,7 @@ def compute_iou(box1, box2):
     return inter_area / union_area if union_area > 0 else 0
 
 
-def non_max_suppression(detections, iou_treshold=0.5):
+def non_max_suppression(detections, iou_threshold=0.5):
     detections = sorted(detections, key=lambda d: d["confidence"], reverse=True)
 
     kept = []
@@ -66,7 +66,7 @@ def non_max_suppression(detections, iou_treshold=0.5):
 
         detections = [
             d for d in detections
-            if compute_iou(best["box"], d["box"]) < iou_treshold
+            if compute_iou(best["box"], d["box"]) < iou_threshold
         ]
     
     return kept
