@@ -16,7 +16,7 @@ to_tensor = transforms.Compose([
 ])
 
 class FaceHitboxDataset(torch.utils.data.Dataset):
-    def __init__(self, dataset_dir: Path = Path("data/"), train: bool = False):
+    def __init__(self, dataset_dir: Path = DATASET_DIR, train: bool = False):
         self.train = train
          
         self.images_dir = dataset_dir / "images" / ("train" if train else "val")
