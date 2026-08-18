@@ -1,6 +1,5 @@
-from settings import *
-
-DATASET_DIR = Path("data/")
+from .settings import *
+from .helper_functions import *
 
 IMAGE_DIR = DATASET_DIR / "images"
 IMAGE_TRAIN_DIR = IMAGE_DIR / "train"

@@ -37,6 +37,7 @@ class FaceHitbox(nn.Module):
         return objectness, box_coords
 
 def main() -> int:
+    SAVE_DIR.mkdir(parents=True, exist_ok=True)
     print("[BOOTING STATUS] Initializing SummaryWriter...")
     writer = SummaryWriter()
     print("[BOOTING STATUS] Initializing dataset...")
@@ -90,7 +91,6 @@ def main() -> int:
             print(f"|- Checkpoint saved at epoch {epoch + 1}")
     writer.close()
     print(f"[TRAINING COMPLETED] Saving model at {SAVE_PATH}...")
-    SAVE_DIR.mkdir(parents=True, exist_ok=True)
     torch.save(obj=model.state_dict(), f=SAVE_PATH)
     print(f"Successfully saved model at {SAVE_PATH} and logs are accessible in {writer.get_logdir()}")
     return 0

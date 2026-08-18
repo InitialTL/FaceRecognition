@@ -1,4 +1,4 @@
-from settings import *
+from .settings import *
 
 def yolo_labels_to_grid(label_tensor, grid_size):
     target = torch.zeros(grid_size, grid_size, 5)
@@ -31,7 +31,7 @@ def compute_loss(objectness_pred, box_coords_pred, targets, obj_loss_fn, box_los
     if (mask.sum() > 0):
         loss_box = box_loss_fn(box_coords_pred[mask], target_box[mask])
     else:
-        loss_box = torch.tensor(0.0)
+        loss_box = torch.tensor(0.0, device=DEVICE)
 
     total_loss = loss_obj + loss_box
     return total_loss, loss_obj, loss_box
