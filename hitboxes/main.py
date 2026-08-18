@@ -1,6 +1,6 @@
-from settings import *
-from helper_functions import *
-import faceds
+from .settings import *
+from .helper_functions import *
+from . import faceds
 
 class ConvBlock(nn.Module):
     def __init__(self, in_channels, out_channels):
@@ -85,7 +85,7 @@ def main() -> int:
         print(f"|- Finished training epoch {epoch + 1}")
         print(f"|-> {avg_loss:.3f}AL | {avg_obj_loss:.3f}AOL | {avg_box_loss:.3f}ABL")
         
-        if (epoch + 1 % 5 == 0):
+        if ((epoch + 1) % 5 == 0):
             torch.save(obj=model.state_dict(), f=SAVE_PATH)
             print(f"|- Checkpoint saved at epoch {epoch + 1}")
     writer.close()

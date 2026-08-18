@@ -31,8 +31,9 @@ class FaceHitboxDataset(torch.utils.data.Dataset):
 
     def __getitem__(self, idx: int):
         image_pth, label_pth = self.getPath(idx=idx)
-        image = Image.open(image_pth).convert("RGB")
-        image_tensor = to_tensor(image)
+        with Image.open(image_pth) as image:
+            image = image.convert("RGB")
+            image_tensor = to_tensor(image)
 
         labels = []
         with open(label_pth, "r") as file:
