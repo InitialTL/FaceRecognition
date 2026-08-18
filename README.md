@@ -13,12 +13,12 @@ Install the necessary packages with
 pip install -r requirements.txt
 ```
 
-<p>Start training the model by running <code>hitboxes/main.py</code></p>
+Start training the model by running <code>hitboxes/main.py</code>
 ```bash
 python -m hitboxes.main
 ```
-<p>Or with the epochs flag <code>-e</code> or <code>--epochs</code></p>
 
+Or with the <code>-e</code> / <code>--epochs</code> flag
 ```bash
 python -m hitboxes.main -e 20
 ```
