@@ -8,7 +8,7 @@ from pathlib import Path
 from os import cpu_count
 from PIL import Image
 
-
+BATCH_SIZE = 32
 HITBOXES_DIR = Path(__file__).resolve().parent
 DATASET_DIR = HITBOXES_DIR / "data"
 
