@@ -10,7 +10,7 @@
 
 Install the necessary packages with
 ```bash
-pip install -r hitboxes/requirements.txt
+pip install -r requirements.txt
 ```
 
 Start training the model by running <code>hitboxes/main.py</code>
