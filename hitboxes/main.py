@@ -1,7 +1,11 @@
 from .settings import *
 from .helper_functions import *
 from . import faceds
-from model import FaceHitbox
+from .model import FaceHitbox
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-e", "--epochs", type=int, default=5)
+args = parser.parse_args()
 
 def main() -> int:
     SAVE_DIR.mkdir(parents=True, exist_ok=True)
@@ -20,11 +24,12 @@ def main() -> int:
     model = FaceHitbox().to(DEVICE)
 
     print("[BOOTING STATUS] Initializing loss functions and optimizer...")
-    obj_loss_fn = nn.BCEWithLogitsLoss()
+    pos_weight = torch.tensor(100.0, device=DEVICE)
+    obj_loss_fn = nn.BCEWithLogitsLoss(pos_weight=pos_weight)
     box_loss_fn = nn.MSELoss()
     optimizer = torch.optim.Adam(params=model.parameters(), lr=0.001)
 
-    epochs = 10
+    epochs = args.epochs
     global_step = 0
     for epoch in range(epochs):
         print(f"[EPOCH {epoch + 1}/{epochs}]")
