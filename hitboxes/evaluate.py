@@ -46,7 +46,7 @@ def main() -> int:
 
         targets = extract_true_detections(target, GRID_SIZE, 640)
 
-        (true_positives, false_positives, false_negatives, matched_ious) = match_detections(predictions, targets, 0.5)
+        (true_positives, false_positives, false_negatives, matched_ious) = match_detections(predictions, targets, args.iou)
         total_true_positives += true_positives
         total_false_positives += false_positives
         total_false_negatives += false_negatives

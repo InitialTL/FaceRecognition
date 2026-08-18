@@ -32,5 +32,5 @@ class FaceHitbox(nn.Module):
         out = out.permute(0, 2, 3, 1)
 
         objectness = out[...,  0:1]
-        box_coords = out[..., 1:5]
+        box_coords = torch.sigmoid(out[..., 1:5])
         return objectness, box_coords
