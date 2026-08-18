@@ -38,6 +38,11 @@ class FaceHitbox(nn.Module):
 
 def main() -> int:
     SAVE_DIR.mkdir(parents=True, exist_ok=True)
+    print(f"[DEVICE STATUS] {DEVICE}")
+    proceed = input("Proceed [y/n] > ")[0] == "y"
+    if proceed:
+        return 1 
+
     print("[BOOTING STATUS] Initializing SummaryWriter...")
     writer = SummaryWriter()
     print("[BOOTING STATUS] Initializing dataset...")
