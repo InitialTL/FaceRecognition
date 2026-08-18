@@ -15,5 +15,5 @@ pip install -r requirements.txt
 
 Start training the model by running <code>hitboxes/main.py</code>
 ```bash
-python hitboxes/main.py
+python -m hitboxes.main
 ```
