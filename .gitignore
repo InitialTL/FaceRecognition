@@ -1,0 +1,12 @@
+hitboxes/data/
+*.pt
+*.pth
+*.ckpt
+*.onx
+
+runs/
+models/
+
+__pycache__/
+*.py[cod]
+vgg_face2/
