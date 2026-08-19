@@ -26,10 +26,11 @@ def main() -> int:
     
     load: bool = False if args.load_existing is None else True
     print("|- Load pre-existing model: {}\n|- Checking rather file exists...".format(load))
-    file_exists: bool = (args.load_existing).is_file()
-    print("|- File " + ("exists" if file_exists else "does not exist."))
-    if not file_exists:
-        return 1 
+    if load:
+        file_exists: bool = (args.load_existing).is_file()
+        print("|- File " + ("exists" if file_exists else "does not exist."))
+        if not file_exists:
+            return 1 
 
     print("[BOOTING STATUS] Initializing loss functions and optimizer...")
     pos_weight = torch.tensor(10.0, device=DEVICE)

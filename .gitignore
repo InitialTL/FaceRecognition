@@ -5,6 +5,8 @@ hitboxes/data/
 *.onx
 
 runs/
+hitboxes/models/*
+!hitboxes/models/.gitkeep
 
 
 __pycache__/
