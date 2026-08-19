@@ -27,7 +27,6 @@ python -m hitboxes.main -e 20
 Takes the path to the model as parameter.</p>
 <strong>NOTICE:</strong> the parameter does not automatically add the hitboxes/ preset
 
-Example
 ```bash
 python -m hitboxes.main -l hitboxes/models/model.pth
 ```
