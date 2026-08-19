@@ -22,3 +22,13 @@ Or with the <code>-e</code> / <code>--epochs</code> flag
 ```bash
 python -m hitboxes.main -e 20
 ```
+
+<p>The -l (--load-existing) is used when wanting to further improve a model that's trained.
+Takes the path to the model as parameter.</p>
+<strong>NOTICE:</strong> the parameter does not automatically add the hitboxes/ preset
+
+Example
+```bash
+python -m hitboxes.main -l hitboxes/models/model.pth
+```
+
