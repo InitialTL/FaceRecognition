@@ -1,3 +1,4 @@
+import random
 from .settings import *
 from .helper_functions import *
 
@@ -40,6 +41,11 @@ class FaceHitboxDataset(torch.utils.data.Dataset):
                 values = line.split()
                 labels.append([float(x) for x in values])
         label_tensor = torch.tensor(labels, dtype=torch.float32)
+
+        if self.train and random.random() < 0.5:
+            image_tensor = torch.flip(image_tensor, dims=[2])
+            label_tensor[:, 1] = 1.0 - label_tensor[:, 1]
+
         target = yolo_labels_to_grid(label_tensor, grid_size=GRID_SIZE)
         return image_tensor, target
 
