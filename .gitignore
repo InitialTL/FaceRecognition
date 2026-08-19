@@ -5,7 +5,7 @@ hitboxes/data/
 *.onx
 
 runs/
-models/
+
 
 __pycache__/
 *.py[cod]
