@@ -70,3 +70,35 @@ def non_max_suppression(detections, iou_threshold=0.5):
         ]
     
     return kept
+
+
+
+def extract_detections_from_grid(objectness, box_coords, grid_size, canvas_size, treshold = 0.5):
+    obj_confidence = torch.sigmoid(objectness).squeeze(-1)
+    
+    detections = []
+    for row in range(grid_size):
+        for col in range(grid_size):
+            conf = obj_confidence[row, col].item()
+            if conf > treshold:
+                cell_box = box_coords[row, col] * canvas_size
+                x_min, y_min, x_max, y_max = cell_box.tolist()
+
+                detections.append({
+                    "box": [x_min, y_min, x_max, y_max],
+                    "confidence": conf,
+                    "cell": (row, col)
+                })
+    return detections
+
+def extract_true_detections(target, grid_size, canvas_size):
+    detections = []
+    for row in range(grid_size):
+        for col in range(grid_size):
+            if target[row, col, 0] == 1:
+                box = target[row, col, 1:5] * canvas_size
+                detections.append({
+                    "box": box.tolist()
+                })
+    return detections
+

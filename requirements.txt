@@ -3,3 +3,4 @@ argparse
 torchvision
 pathlib
 tensorboard
+matplotlib

@@ -5,6 +5,7 @@ from .model import FaceHitbox
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-e", "--epochs", type=int, default=5)
+parser.add_argument("-l", "--load-existing", type=Path, default=None)
 args = parser.parse_args()
 
 def main() -> int:
@@ -22,9 +23,16 @@ def main() -> int:
     dataloader = DataLoader(dataset=dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=NUM_WORKERS)
     print("[BOOTING STATUS] Initializing model...")
     model = FaceHitbox().to(DEVICE)
+    
+    load: bool = False if args.load_existing is None else True
+    print("|- Load pre-existing model: {}\n|- Checking rather file exists...".format(load))
+    file_exists: bool = (args.load_existing).is_file()
+    print("|- File " + ("exists" if file_exists else "does not exist."))
+    if not file_exists:
+        return 1 
 
     print("[BOOTING STATUS] Initializing loss functions and optimizer...")
-    pos_weight = torch.tensor(100.0, device=DEVICE)
+    pos_weight = torch.tensor(10.0, device=DEVICE)
     obj_loss_fn = nn.BCEWithLogitsLoss(pos_weight=pos_weight)
     box_loss_fn = nn.MSELoss()
     optimizer = torch.optim.Adam(params=model.parameters(), lr=0.001)
@@ -75,4 +83,4 @@ def main() -> int:
 if (__name__ == '__main__'):
     print("[PROGRAM STATUS] Started program...")
     exit_status = main()
-    print(f"[PROGRAM STATUS] Finished program {'successfully ' if not exit_status else ' '}with exit status {exit_status}{'.' if exit_status else '!'}")
+    print(f"[PROGRAM STATUS] Finished program {'successfully ' if not exit_status else ''}with exit status {exit_status}{'.' if exit_status else '!'}")
