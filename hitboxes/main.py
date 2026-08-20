@@ -19,8 +19,10 @@ def main() -> int:
     writer = SummaryWriter()
     print("[BOOTING STATUS] Initializing dataset...")
     dataset = faceds.FaceHitboxDataset(train=True)
+    val_dataset = faceds.FaceHitboxDataset(train=False)
     print("[BOOTING STATUS] Initializing dataloader...")
     dataloader = DataLoader(dataset=dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=NUM_WORKERS)
+    val_dataloader = DataLoader(dataset=val_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=NUM_WORKERS)
     print("[BOOTING STATUS] Initializing model...")
     model = FaceHitbox().to(DEVICE)
     
@@ -40,10 +42,12 @@ def main() -> int:
 
     epochs = args.epochs
     global_step = 0
+    best_val_loss = float("inf")
     for epoch in range(epochs):
         print(f"[EPOCH {epoch + 1}/{epochs}]")
         avg_loss, avg_obj_loss, avg_box_loss, samples = 0, 0, 0, 0
-
+        
+        model.train()
         for batch, (images, target) in enumerate(dataloader):
             images, target = images.to(DEVICE), target.to(DEVICE)
 
@@ -72,6 +76,31 @@ def main() -> int:
         print(f"|- Finished training epoch {epoch + 1}")
         print(f"|-> {avg_loss:.3f}AL | {avg_obj_loss:.3f}AOL | {avg_box_loss:.3f}ABL")
         
+        model.eval()
+        val_loss, val_obj_loss, val_box_loss, val_samples = 0, 0, 0, 0
+        with torch.no_grad():
+            for images, target in val_dataloader:
+                images, target = images.to(DEVICE), target.to(DEVICE)
+                objectness_pred, box_coords_pred = model(images)
+                total_loss, obj_loss, box_loss = compute_loss(objectness_pred, box_coords_pred, target, obj_loss_fn, box_loss_fn)
+
+                val_loss += total_loss.item()
+                val_obj_loss += obj_loss.item()
+                val_box_loss += box_loss.item()
+                val_samples += 1 
+            val_loss /= val_samples
+            val_obj_loss /= val_samples
+            val_box_loss /= val_samples
+            writer.add_scalar("Loss/objectness_val", val_obj_loss, global_step)
+            writer.add_scalar("Loss/box_val", val_box_loss, global_step)
+            writer.add_scalar("Loss/total_val", val_loss, global_step)
+            print(f"|- Validation: {val_loss:.3f}VL | {val_obj_loss:.3f}VOL | {val_box_loss:.3f}VBL")
+
+        if val_loss < best_val_loss:
+            best_val_loss = val_loss
+            torch.save(obj=model.state_dict(), f=SAVE_DIR / "best.pth")
+            print(f"|- New best val loss ({val_loss:.4f}) — saved best.pth")
+
         if ((epoch + 1) % 5 == 0):
             torch.save(obj=model.state_dict(), f=SAVE_PATH)
             print(f"|- Checkpoint saved at epoch {epoch + 1}")
