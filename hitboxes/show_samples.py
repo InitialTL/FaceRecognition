@@ -2,6 +2,7 @@ from .settings import *
 from .helper_functions import *
 from . import faceds
 from .model import FaceHitbox
+from PIL import Image
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
@@ -16,6 +17,26 @@ model.load_state_dict(torch.load(str(SAVE_PATH), map_location=DEVICE))
 model.to(DEVICE)
 model.eval()
 
+
+def scale_boxes_to_original(detections, orig_width, orig_height):
+    """
+    detections: list of dicts with normalized [0,1] "box": [x_min,y_min,x_max,y_max]
+    Returns: same list, boxes scaled to this image's actual pixel dimensions.
+    """
+    scaled = []
+    for det in detections:
+        x_min, y_min, x_max, y_max = det["box"]
+        new_det = dict(det)
+        new_det["box"] = [
+            x_min * orig_width,
+            y_min * orig_height,
+            x_max * orig_width,
+            y_max * orig_height,
+        ]
+        scaled.append(new_det)
+    return scaled
+
+
 def show_samples(images, detection_sets, colors=["yellow", "green"]):
     n = len(images)
     cols = min(n, 5)
@@ -23,8 +44,7 @@ def show_samples(images, detection_sets, colors=["yellow", "green"]):
 
     for i in range(n):
         ax = plt.subplot(rows, cols, i + 1)
-        img = images[i].permute(1, 2, 0).numpy()  # (C,H,W) -> (H,W,C) for imshow
-        ax.imshow(img)
+        ax.imshow(images[i])  # PIL image at native resolution, imshow accepts it directly
 
         for type_i, detections_per_sample in enumerate(detection_sets):
             color = colors[type_i % len(colors)]
@@ -41,6 +61,7 @@ def show_samples(images, detection_sets, colors=["yellow", "green"]):
     plt.tight_layout()
     plt.show()
 
+
 def main() -> int:
     dataset = faceds.FaceHitboxDataset(dataset_dir=faceds.DATASET_DIR, train=False)
     n = max(1, min(args.number_of_samples, len(dataset)))
@@ -50,27 +71,36 @@ def main() -> int:
     all_true_detections = []
 
     for i in range(n):
-        image, target = dataset[i]
-        images.append(image)
-        image_batched = image.unsqueeze(0).to(DEVICE)
+        image_pth, _ = dataset.getPath(i)
+        original_image = Image.open(image_pth).convert("RGB")
+        orig_width, orig_height = original_image.size
+        images.append(original_image)
+
+        # dataset[i] still gives the resized 640x640 tensor + grid target -- needed for the model
+        image_tensor, target = dataset[i]
+        image_batched = image_tensor.unsqueeze(0).to(DEVICE)
 
         with torch.inference_mode():
             objectness, box_coords = model(image_batched)
 
+        # extract in normalized [0,1] space -- canvas_size=1.0 means "don't scale yet"
         pred_detections = extract_detections_from_grid(
             objectness.squeeze(0).cpu(), box_coords.squeeze(0).cpu(),
-            GRID_SIZE, IMAGE_SIZE, treshold=args.confidence
+            GRID_SIZE, 1.0, treshold=args.confidence
         )
-        print(f"before NMS: {len(pred_detections)}")
         pred_detections = non_max_suppression(pred_detections, iou_threshold=args.iou)
-        print(f"after NMS: {len(pred_detections)}")
-        true_detections = extract_true_detections(target, GRID_SIZE, IMAGE_SIZE)
+        true_detections = extract_true_detections(target, GRID_SIZE, 1.0)
+
+        # NOW scale each to THIS image's actual dimensions
+        pred_detections = scale_boxes_to_original(pred_detections, orig_width, orig_height)
+        true_detections = scale_boxes_to_original(true_detections, orig_width, orig_height)
 
         all_pred_detections.append(pred_detections)
         all_true_detections.append(true_detections)
 
     show_samples(images, [all_pred_detections, all_true_detections], colors=["yellow", "green"])
     return 0
+
 
 if __name__ == '__main__':
     print("[PROGRAM STATUS] Started program...")
