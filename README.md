@@ -31,3 +31,21 @@ Takes the path to the model as parameter.</p>
 python -m hitboxes.main -e 5 -l hitboxes/models/model.pth
 ```
 
+
+<h2>Hitboxes / show_samples.py</h2>
+<p>This is ran when wanting to look at the models predictions with <code>-n</code> testing samples</p>
+```bash
+python -m hitboxes.show_samples -n 10
+```
+<em>The default <code>--number-of-samples</code> (or <code>-n</code>) is 6</em>
+
+
+<p>Sometimes, you would want to look specifically at the best model that was evaluated when training,
+and to do that, you would need to use the <code>-b</code> or <code>--use-best</code> flag.
+This flag, when used, loads the pre-existing file best.pth in the models folder.</p>
+
+
+```bash
+python -m hitboxes.main -e 5 -b 
+```
+

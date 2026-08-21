@@ -75,11 +75,11 @@ class FaceHitboxDataset(torch.utils.data.Dataset):
                 image, label_tensor = random_crop_with_boxes(image, label_tensor)
             image = color_jitter(image)
         image_tensor: torch.Tensor = to_tensor(image)
-        if self.train() and random.random() < 0.5:
+        if self.train and random.random() < 0.5:
             image_tensor = torch.flip(image_tensor, dims=[2])
             label_tensor[:, 1] = 1.0 - label_tensor[:, 1]
 
-        if self.train():
+        if self.train:
             image_tensor = random_erase(image_tensor)
 
         target = yolo_labels_to_grid(label_tensor, grid_size=GRID_SIZE)
