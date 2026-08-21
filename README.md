@@ -40,7 +40,7 @@ This is ran when wanting to look at the models predictions with <code>-n</code> 
 python -m hitboxes.show_samples -n 10
 ```
 
-<em>The default <code>--number-of-samples</code> (or <code>-n</code>) is 6</em>
+<em>The default value of <code>--number-of-samples</code> (or <code>-n</code>) is 6</em>
 
 
 Sometimes, you would want to look specifically at the best model that was evaluated when training,
