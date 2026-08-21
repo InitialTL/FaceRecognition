@@ -98,7 +98,7 @@ def main() -> int:
 
         if val_loss < best_val_loss:
             best_val_loss = val_loss
-            torch.save(obj=model.state_dict(), f=SAVE_DIR / "best.pth")
+            torch.save(obj=model.state_dict(), f=BEST_MODEL_PATH)
             print(f"|- New best val loss ({val_loss:.4f}) — saved best.pth")
 
         if ((epoch + 1) % 5 == 0):

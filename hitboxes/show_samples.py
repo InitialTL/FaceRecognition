@@ -7,13 +7,17 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-n", "--number-of-samples", type=int, default=6)
+parser.add_argument("--use-best", "-b", action="store_true")
+parser.add_argument("--number-of-samples", "-n", type=int, default=6)
 parser.add_argument("--confidence", type=float, default=0.5)
 parser.add_argument("--iou", type=float, default=0.5)
 args = parser.parse_args()
 
 model = FaceHitbox()
-model.load_state_dict(torch.load(str(SAVE_PATH), map_location=DEVICE))
+if args.use_best:
+    model.load_state_dict(torch.load(str(BEST_MODEL_PATH), map_location=DEVICE))
+else:
+    model.load_state_dict(torch.load(str(SAVE_PATH), map_location=DEVICE))
 model.to(DEVICE)
 model.eval()
 

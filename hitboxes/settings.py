@@ -14,6 +14,7 @@ DATASET_DIR = HITBOXES_DIR / "data"
 
 SAVE_DIR = HITBOXES_DIR / "models"
 SAVE_PATH = SAVE_DIR / "model.pth"
+BEST_MODEL_PATH = SAVE_DIR / "best.pth"
 
 
 NUM_WORKERS: int = int(cpu_count() or 1)
