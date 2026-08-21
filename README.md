@@ -37,6 +37,7 @@ This is ran when wanting to look at the models predictions with <code>-n</code> 
 ```bash
 python -m hitboxes.show_samples -n 10
 ```
+<br />
 <em>The default <code>--number-of-samples</code> (or <code>-n</code>) is 6</em>
 
 
