@@ -33,11 +33,13 @@ python -m hitboxes.main -e 5 -l hitboxes/models/model.pth
 
 
 <h2>Hitboxes / show_samples.py</h2>
+
 This is ran when wanting to look at the models predictions with <code>-n</code> testing samples
+
 ```bash
 python -m hitboxes.show_samples -n 10
 ```
-<br />
+
 <em>The default <code>--number-of-samples</code> (or <code>-n</code>) is 6</em>
 
 
