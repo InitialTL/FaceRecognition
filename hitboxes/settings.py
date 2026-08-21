@@ -4,6 +4,7 @@ import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 from torch.utils.tensorboard import SummaryWriter
 from torchvision import datasets, transforms
+from torchvision import transforms.functional as TF
 from pathlib import Path
 from os import cpu_count
 from PIL import Image
